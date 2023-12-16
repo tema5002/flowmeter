@@ -92,7 +92,7 @@ async def on_message(message):
                                 except:
                                     await message.channel.send("cant encode 💀💀💀")
 
-        elif balls[14:].startswith("remove tag "):
+        elif balls[14:].startswith("remove tag ") and not message.author.bot:
             if not(message.guild.owner_id==message.author.id or message.author.id==tema5002):
                 await message.channel.send("perms issue "+"<:pointlaugh:1128309108001484882>"*5)
             else:
