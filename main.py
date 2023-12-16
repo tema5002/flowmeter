@@ -14,7 +14,11 @@ def get_file_path(id):
 
     # creates the "config" folder if it doesnt exist
     folder_dir = os.path.join(folder_dir, "config")
-    if not os.path.exists(folder_dir): os.makedirs(folder_dir)
+    if not os.path.exists(folder_dir):
+        os.makedirs(folder_dir)
+    h=os.path.join(folder_dir, filename)
+    if not os.path.exists(h):
+        with open(h, "w") as f: pass
 
     return os.path.join(folder_dir, filename)
 
@@ -62,7 +66,7 @@ async def on_message(message):
     await bot.process_commands(message)
     balls=message.content.lower()
     if balls.startswith("hey flowmeter "):
-        if balls[14:].startswith("add tag "):
+        if balls[14:].startswith("add tag ") and not message.author.bot:
             if not(message.guild.owner_id==message.author.id or message.author.id==tema5002):
                 await message.channel.send("perms issue "+"<:pointlaugh:1128309108001484882>"*5)
             else:
@@ -76,30 +80,35 @@ async def on_message(message):
                         if h[1]!="default" and h[1]!="=" and h[1]!="==" and h[1]!="split":
                             await message.channel.send("incorrect detection type <:yeh:1183111141409435819>")
                         else:
-                            typingemoji=""
-                            try:
-                                for every in codecs.open(get_file_path(message.guild.id), encoding="utf-8").read().split("\n")+[d]:
-                                    if every!="": typingemoji+=f"{every}\n"
-                                with codecs.open(get_file_path(message.guild.id),"w", encoding="utf-8") as file:
-                                    file.write(typingemoji[:-1])
-                                await message.channel.send(f"`{d}` was added to **{message.guild.name}**'s tags")
-                            except:
-                                await message.channel.send("cant encode 💀💀💀")
+                            if "\n" in h[2]: await message.channel.send("you cant word wrap")
+                            else:
+                                typingemoji=""
+                                try:
+                                    for every in codecs.open(get_file_path(message.guild.id), encoding="utf-8").read().split("\n")+[d]:
+                                        if every!="": typingemoji+=f"{every}\n"
+                                    with codecs.open(get_file_path(message.guild.id),"w", encoding="utf-8") as file:
+                                        file.write(typingemoji[:-1])
+                                    await message.channel.send(f"`{d}` was added to **{message.guild.name}**'s tags")
+                                except:
+                                    await message.channel.send("cant encode 💀💀💀")
 
         elif balls[14:].startswith("remove tag "):
-            h=codecs.open(get_file_path(message.guild.id), encoding="utf-8").read().split("\n")
-            d=message.content[25:]
-            for every in h:
-                if every.split(";")[0]==d:
-                    d=every
-            if d in h:
-                typingemoji=""
+            if not(message.guild.owner_id==message.author.id or message.author.id==tema5002):
+                await message.channel.send("perms issue "+"<:pointlaugh:1128309108001484882>"*5)
+            else:
+                h=codecs.open(get_file_path(message.guild.id), encoding="utf-8").read().split("\n")
+                d=message.content[25:]
                 for every in h:
-                    if every!="" and every!=d: typingemoji+=f"{every}\n"
-                with codecs.open(get_file_path(message.guild.id), "w", encoding="utf-8") as file:
-                    file.write(typingemoji[:-1])
-                await message.channel.send(f"`{d}` was removed from **{message.guild.name}**'s tags")
-            else: await message.channel.send(f"`{d}` is not an actual tag you silly")
+                    if every.split(";")[0]==d:
+                        d=every
+                if d in h:
+                    typingemoji=""
+                    for every in h:
+                        if every!="" and every!=d: typingemoji+=f"{every}\n"
+                    with codecs.open(get_file_path(message.guild.id), "w", encoding="utf-8") as file:
+                        file.write(typingemoji[:-1])
+                    await message.channel.send(f"`{d}` was removed from **{message.guild.name}**'s tags")
+                else: await message.channel.send(f"`{d}` is not an actual tag you silly")
         elif balls[14:]=="list tags":
             try:
                 t=""
