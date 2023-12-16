@@ -4,7 +4,7 @@ from random import choice
 import asyncio
 import codecs
 import os
-bot=commands.Bot(command_prefix="hey flowmeter ",help_command=None,intents=disnake.Intents.all())
+bot=commands.Bot(help_command=None,intents=disnake.Intents.all())
 
 def get_file_path(id):
 
@@ -67,20 +67,23 @@ async def on_message(message):
             else:
                 d=message.content[22:]
                 h=d.split(";")
-                if len(h)!=3: await message.channel.send(f"you need to type **3** arguments here but **{len(h)}** was given")
+                if d in codecs.open(get_file_path(message.guild.id), encoding="utf-8").read().split("\n"):
+                    await message.channel.send("silly you already have added that tag")
                 else:
-                    if h[1]!="default" and h[1]!="=" and h[1]!="==":
-                        await message.channel.send("incorrect detection type <:yeh:1183111141409435819>")
+                    if len(h)!=3: await message.channel.send(f"you need to type **3** arguments here but **{len(h)}** was given")
                     else:
-                        typingemoji=""
-                        try:
-                            for every in codecs.open(get_file_path(message.guild.id), encoding="utf-8").read().split("\n")+[d]:
-                                if every!="": typingemoji+=f"{every}\n"
-                            with codecs.open(get_file_path(message.guild.id),"w", encoding="utf-8") as file:
-                                file.write(typingemoji[:-1])
-                            await message.channel.send(f"`{d}` was added to **{message.guild.name}**'s tags")
-                        except:
-                            await message.channel.send("cant encode 💀💀💀")
+                        if h[1]!="default" and h[1]!="=" and h[1]!="==":
+                            await message.channel.send("incorrect detection type <:yeh:1183111141409435819>")
+                        else:
+                            typingemoji=""
+                            try:
+                                for every in codecs.open(get_file_path(message.guild.id), encoding="utf-8").read().split("\n")+[d]:
+                                    if every!="": typingemoji+=f"{every}\n"
+                                with codecs.open(get_file_path(message.guild.id),"w", encoding="utf-8") as file:
+                                    file.write(typingemoji[:-1])
+                                await message.channel.send(f"`{d}` was added to **{message.guild.name}**'s tags")
+                            except:
+                                await message.channel.send("cant encode 💀💀💀")
 
         elif balls[14:].startswith("remove tag "):
             h=codecs.open(get_file_path(message.guild.id), encoding="utf-8").read().split("\n")
