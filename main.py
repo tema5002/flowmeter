@@ -73,7 +73,7 @@ async def on_message(message):
                 else:
                     if len(h)!=3: await message.channel.send(f"you need to type **3** arguments here but **{len(h)}** was given")
                     else:
-                        if h[1]!="default" and h[1]!="=" and h[1]!="==":
+                        if h[1]!="default" and h[1]!="=" and h[1]!="==" and h[1]!="split":
                             await message.channel.send("incorrect detection type <:yeh:1183111141409435819>")
                         else:
                             typingemoji=""
@@ -117,6 +117,7 @@ async def on_message(message):
                 if h[1]=="default" and h[0].lower() in balls: proglet=True
                 elif h[1]=="=" and h[0].lower()==balls: proglet=True
                 elif h[1]=="==" and h[0]==balls: proglet=True
+                elif h[1]=="split" and h[0].lower() in balls.split(): proglet=True
                 if proglet: await message.channel.send(h[2])
 
 @bot.slash_command(name="add_tag",description="add tag")
@@ -132,6 +133,7 @@ async def help(ctx):
         "> - **keyword** - keyword which triggers the reply\n"+
         "> - **detection_type**:\n"+
         "> - - **default** - triggers if **keyword** in message content (not case sensitive)\n"+
+        "> - - **split** - i have no clue how do i explain but it uses python `.split()`\n"+
         "> - - **=** - match\n"+
         "> - - **==** - exact match (it means case sensitive)\n"+
         "> - **reply** - uhhhh a reply maybe\n"+
