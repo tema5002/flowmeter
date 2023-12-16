@@ -101,13 +101,16 @@ async def on_message(message):
                 await message.channel.send(f"`{d}` was removed from **{message.guild.name}**'s tags")
             else: await message.channel.send(f"`{d}` is not an actual tag you silly")
         elif balls[14:]=="list tags":
-            t=""
-            with codecs.open(get_file_path(message.guild.id), encoding="utf-8") as file:
-                list=file.read().split("\n")
-            for every in list:
-                h=every.split(";")
-                t+=h[0]+"\n"
-            await message.channel.send(t)
+            try:
+                t=""
+                with codecs.open(get_file_path(message.guild.id), encoding="utf-8") as file:
+                    list=file.read().split("\n")
+                for every in list:
+                    h=every.split(";")
+                    t+=h[0]+"\n"
+                await message.channel.send(t)
+            except:
+                await message.channel.send("no tags <:EmotiDead:1185677578707664957>")
     with codecs.open(get_file_path(message.guild.id), encoding="utf-8") as file:
         list=file.read().split("\n")
         for every in list:
@@ -142,5 +145,22 @@ async def help(ctx):
         "> You can use *hey flowmeter list tags* to **list existing tags on this server**\n"+
         "[support server](https://discord.gg/kCStS6pYqr) (kind of)")
     await ctx.send(embed=embed)
+
+@bot.slash_command(name="stats",description="prints list of servers on which flowmeter in is in console (only for tema5002)")
+async def stats(ctx):
+    if ctx.author.id==tema5002:
+        h=[]
+        for every in bot.guilds:
+            h+=[every]
+        print(h)
+        await ctx.send("h")
+    else:
+        await ctx.send("<:typing:1133071627370897580>⤴")
+
+@bot.slash_command(name="ping",description="shows ping")
+async def ping(ctx):
+    await ctx.response.defer()
+    h=round(bot.latency*1000)
+    await ctx.send(f"<:ammeter:1181921753790939146>📡\n<:flowmeter:1185673481258545233>📡<:blank:1185673931894554715> <--[{h}ms]--> <:blank:1185673931894554715><:discord:1185673704370352208>")
 
 bot.run(open("TOKEN.txt").read())
