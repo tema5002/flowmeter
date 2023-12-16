@@ -39,7 +39,8 @@ games=[
     "Infinitode 2",
     "Minecraft Launcher",
     "Source Filmmaker",
-    "Blender"
+    "Blender",
+    "Code::Blocks 20.03"
     ]
 
 @bot.event
