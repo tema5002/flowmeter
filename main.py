@@ -81,8 +81,21 @@ async def on_message(message):
                             await message.channel.send(f"`{d}` was added to **{message.guild.name}**'s tags")
                         except:
                             await message.channel.send("cant encode 💀💀💀")
+
         elif balls[14:].startswith("remove tag "):
-            await message.channel.send(":clamp:")
+            h=codecs.open(get_file_path(message.guild.id), encoding="utf-8").read().split("\n")
+            d=message.content[25:]
+            for every in h:
+                if every.split(";")[0]==d:
+                    d=every
+            if d in h:
+                typingemoji=""
+                for every in h:
+                    if every!="" and every!=d: typingemoji+=f"{every}\n"
+                with codecs.open(get_file_path(message.guild.id), "w", encoding="utf-8") as file:
+                    file.write(typingemoji[:-1])
+                await message.channel.send(f"`{d}` was removed from **{message.guild.name}**'s tags")
+            else: await message.channel.send(f"`{d}` is not an actual tag you silly")
         elif balls[14:]=="list tags":
             t=""
             with codecs.open(get_file_path(message.guild.id), encoding="utf-8") as file:
@@ -118,7 +131,9 @@ async def help(ctx):
         "> - - **=** - match\n"+
         "> - - **==** - exact match (it means case sensitive)\n"+
         "> - **reply** - uhhhh a reply maybe\n"+
-        "> You can use /add_tag slash command **or** say *hey flowmeter add tag keyword;detection_type;reply*\n"+
+        "> You can use /add_tag slash command or say *hey flowmeter add tag keyword;detection_type;reply* to **add new tag**\n"+
+        "> You can use /remove_tag slash command or say *hey flowmeter remove tag keyword* to **remove tag**\n"+
+        "> You can use *hey flowmeter list tags* to **list existing tags on this server**\n"+
         "[support server](https://discord.gg/kCStS6pYqr) (kind of)")
     await ctx.send(embed=embed)
 
