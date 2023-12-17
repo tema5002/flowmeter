@@ -90,7 +90,10 @@ async def on_message(message):
                                         file.write(typingemoji[:-1])
                                     await message.channel.send(f"`{d}` was added to **{message.guild.name}**'s tags")
                                 except:
-                                    await message.channel.send("cant encode 💀💀💀")
+                                    try:
+                                        await message.channel.send("cant encode 💀💀💀")
+                                    except:
+                                        print("cant send message what the hell")
 
         elif balls[14:].startswith("remove tag ") and not message.author.bot:
             if not(message.guild.owner_id==message.author.id or message.author.id==tema5002):
@@ -107,7 +110,10 @@ async def on_message(message):
                         if every!="" and every!=d: typingemoji+=f"{every}\n"
                     with codecs.open(get_file_path(message.guild.id), "w", encoding="utf-8") as file:
                         file.write(typingemoji[:-1])
-                    await message.channel.send(f"`{d}` was removed from **{message.guild.name}**'s tags")
+                    try:
+                        await message.channel.send(f"`{d}` was removed from **{message.guild.name}**'s tags")
+                    except:
+                        print("cant send message what the hell")
                 else: await message.channel.send(f"`{d}` is not an actual tag you silly")
         elif balls[14:]=="list tags":
             try:
@@ -128,7 +134,7 @@ async def on_message(message):
                 proglet=False
                 if h[1]=="default" and h[0].lower() in balls: proglet=True
                 elif h[1]=="=" and h[0].lower()==balls: proglet=True
-                elif h[1]=="==" and h[0]==balls: proglet=True
+                elif h[1]=="==" and h[0]==message.content: proglet=True
                 elif h[1]=="split" and h[0].lower() in balls.split(): proglet=True
                 if proglet: await message.channel.send(h[2])
 
