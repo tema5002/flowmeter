@@ -147,11 +147,6 @@ async def on_message(message):
                 await message.channel.send(t)
             except:
                 await message.channel.send("no tags <:EmotiDead:1185677578707664957>")
-
-@bot.slash_command(name="add_tag",description="add tag")
-async def send_splash_here(ctx):
-    pass
-
 @bot.slash_command(name="help",description="help")
 async def help(ctx):
     embed=disnake.Embed(title="Flowmeter",color=0x00FFFF,description=
@@ -165,22 +160,11 @@ async def help(ctx):
         "> - - **=** - match\n"+
         "> - - **==** - exact match (it means case sensitive)\n"+
         "> - **reply** - uhhhh a reply maybe\n"+
-        "> You can use /add_tag slash command or say *hey flowmeter add tag keyword;detection_type;reply* to **add new tag**\n"+
-        "> You can use /remove_tag slash command or say *hey flowmeter remove tag keyword* to **remove tag**\n"+
-        "> You can use *hey flowmeter list tags* to **list existing tags on this server**\n"+
+        "> Say *hey flowmeter add tag keyword;detection_type;reply* to **add new tag**\n"+
+        "> Say *hey flowmeter remove tag keyword* to **remove tag**\n"+
+        "> Say *hey flowmeter list tags* to **list existing tags on this server**\n"+
         "[support server](https://discord.gg/kCStS6pYqr) (kind of)")
     await ctx.send(embed=embed)
-
-@bot.slash_command(name="stats",description="prints list of servers on which flowmeter in is in console (only for tema5002)")
-async def stats(ctx):
-    if ctx.author.id==tema5002:
-        h=[]
-        for every in bot.guilds:
-            h+=[every]
-        print(h)
-        await ctx.send("h")
-    else:
-        await ctx.send("<:typing:1133071627370897580>⤴")
 
 @bot.slash_command(name="ping",description="shows ping")
 async def ping(ctx):
