@@ -22,6 +22,31 @@ def get_file_path(id):
 
     return os.path.join(folder_dir, filename)
 
+def openfile(guild_id):
+    return codecs.open(get_file_path(guild_id), encoding="utf-8")
+
+# it is like openfile() but for editing
+def editfile(guild_id):
+    return codecs.open(get_file_path(guild_id), "w", encoding="utf-8")
+
+# add line to the end of the file:
+def altteotf(guild_id,line):
+    file_list=openfile(guild_id).read().split("\n")
+    with codecs.open(get_file_path(guild_id), "w", encoding="utf-8") as file:
+        for every in file_list:
+            if every!="":
+                file.write(f"{every}\n")
+        file.write(line)
+
+# remove line from the file:
+def rlfrf(guild_id, line):
+    file_list=openfile(guild_id).read().split("\n")
+    typingemoji=""
+    for every in file_list:
+        if every!=line:
+            typingemoji+=f"{every}\n"
+    editfile(guild_id).write(typingemoji[:-1])
+
 # i store user ids here
 tema5002=558979299177136164
 flowmeter=1184192159944028200
@@ -56,79 +81,12 @@ async def on_ready():
         await asyncio.sleep(60)
 
 @bot.event
-async def on_guild_remove(guild):
-    channel=bot.get_channel(1183416187326038110)
-    try: await channel.send(f"**{guild.owner.name}** пидорас тупой он меня по IP забанил с сервера **{guild.name}** :hugging::hugging::hugging::smiling_face_with_3_hearts::smiling_face_with_3_hearts::exploding_head::relaxed::relaxed::relaxed::kissing_heart::kissing_heart::kissing_heart::heart_eyes::heart_eyes::blush::blush::kissing_closed_eyes::kissing_closed_eyes:")
-    except: await channel.send("i got removed from some server which name i dont know")
-
-@bot.event
 async def on_message(message):
     await bot.process_commands(message)
     balls=message.content.lower()
-    if balls.startswith("hey flowmeter "):
-        if balls[14:].startswith("add tag ") and not message.author.bot:
-            if not(message.guild.owner_id==message.author.id or message.author.id==tema5002):
-                await message.channel.send("perms issue "+"<:pointlaugh:1128309108001484882>"*5)
-            else:
-                d=message.content[22:]
-                h=d.split(";")
-                if d in codecs.open(get_file_path(message.guild.id), encoding="utf-8").read().split("\n"):
-                    await message.channel.send("silly you already have added that tag")
-                else:
-                    if len(h)!=3: await message.channel.send(f"you need to type **3** arguments here but **{len(h)}** was given")
-                    else:
-                        if h[1]!="default" and h[1]!="=" and h[1]!="==" and h[1]!="split":
-                            await message.channel.send("incorrect detection type <:yeh:1183111141409435819>")
-                        else:
-                            if "\n" in h[2]: await message.channel.send("you cant word wrap")
-                            else:
-                                typingemoji=""
-                                try:
-                                    for every in codecs.open(get_file_path(message.guild.id), encoding="utf-8").read().split("\n")+[d]:
-                                        if every!="": typingemoji+=f"{every}\n"
-                                    with codecs.open(get_file_path(message.guild.id),"w", encoding="utf-8") as file:
-                                        file.write(typingemoji[:-1])
-                                    await message.channel.send(f"`{d}` was added to **{message.guild.name}**'s tags")
-                                except:
-                                    try:
-                                        await message.channel.send("cant encode 💀💀💀")
-                                    except:
-                                        print("cant send message what the hell")
 
-        elif balls[14:].startswith("remove tag ") and not message.author.bot:
-            if not(message.guild.owner_id==message.author.id or message.author.id==tema5002):
-                await message.channel.send("perms issue "+"<:pointlaugh:1128309108001484882>"*5)
-            else:
-                h=codecs.open(get_file_path(message.guild.id), encoding="utf-8").read().split("\n")
-                d=message.content[25:]
-                for every in h:
-                    if every.split(";")[0]==d:
-                        d=every
-                if d in h:
-                    typingemoji=""
-                    for every in h:
-                        if every!="" and every!=d: typingemoji+=f"{every}\n"
-                    with codecs.open(get_file_path(message.guild.id), "w", encoding="utf-8") as file:
-                        file.write(typingemoji[:-1])
-                    try:
-                        await message.channel.send(f"`{d}` was removed from **{message.guild.name}**'s tags")
-                    except:
-                        print("cant send message what the hell")
-                else: await message.channel.send(f"`{d}` is not an actual tag you silly")
-        elif balls[14:]=="list tags":
-            try:
-                t=""
-                with codecs.open(get_file_path(message.guild.id), encoding="utf-8") as file:
-                    list=file.read().split("\n")
-                for every in list:
-                    h=every.split(";")
-                    t+=h[0]+"\n"
-                await message.channel.send(t)
-            except:
-                await message.channel.send("no tags <:EmotiDead:1185677578707664957>")
-    with codecs.open(get_file_path(message.guild.id), encoding="utf-8") as file:
-        list=file.read().split("\n")
-        for every in list:
+    with openfile(message.guild.id) as file:
+        for every in file.read().split("\n"):
             h=every.split(";")
             if len(h)==3 and message.author.id!=flowmeter:
                 proglet=False
@@ -137,6 +95,58 @@ async def on_message(message):
                 elif h[1]=="==" and h[0]==message.content: proglet=True
                 elif h[1]=="split" and h[0].lower() in balls.split(): proglet=True
                 if proglet: await message.channel.send(h[2])
+
+    if balls.startswith("hey flowmeter "):
+        if balls[14:].startswith("add tag ") and not message.author.bot:
+            if not(message.guild.owner_id==message.author.id or message.author.id==tema5002):
+                msg = "perms issue "+"<:pointlaugh:1128309108001484882>"*5
+            else:
+                rule = message.content[22:]
+                h = rule.split(";")
+                if rule in openfile(message.guild.id).read().split("\n"):
+                    msg = "silly you already have added that tag"
+                elif len(h)!=3:
+                    msg = f"you need to type **3** arguments here but **{len(h)}** was given" 
+                elif not any(_==h[1] for _ in ["=", "==", "default", "split"]):
+                    msg = "incorrect detection type <:yeh:1183111141409435819>\n"
+                elif "\n" in h[2]:
+                    msg = "you cant word wrap"
+                else:
+                    altteotf(message.guild.id, rule)
+                    msg = f"`{rule}` was added to **{message.guild.name}**'s tags"
+            try:
+                await message.channel.send(msg)
+            except:
+                print("cant send message wota hell")
+
+        elif balls[14:].startswith("remove tag ") and not message.author.bot:
+            if not(message.guild.owner_id==message.author.id or message.author.id==tema5002):
+                msg = "perms issue "+"<:pointlaugh:1128309108001484882>"*5
+            else:
+                rule=message.content[25:]
+                for every in openfile(message.guild.id).read().split("\n"):
+                    if every.split(";")[0]==rule:
+                        rule=every
+                if rule in openfile(message.guild.id).read().split("\n"):
+                    rlfrf(message.guild.id, rule)
+                    msg = f"`{rule}` was removed from **{message.guild.name}**'s tags"
+                else:
+                    msg = f"`{rule}` is not an actual tag you silly"
+            try:
+                await message.channel.send(msg)
+            except:
+                print("cant send message wota hell")
+
+        elif balls[14:]=="list tags":
+            try:
+                t=""
+                with openfile(message.guild.id) as file:
+                    list=file.read().split("\n")
+                for every in list:
+                    t+=every.split(";")[0]+"\n"
+                await message.channel.send(t)
+            except:
+                await message.channel.send("no tags <:EmotiDead:1185677578707664957>")
 
 @bot.slash_command(name="add_tag",description="add tag")
 async def send_splash_here(ctx):
