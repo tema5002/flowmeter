@@ -1,6 +1,7 @@
 import disnake
 from disnake.ext import commands
 from random import choice
+import math
 import asyncio
 import codecs
 import os
@@ -47,6 +48,29 @@ def rlfrf(guild_id, line):
             typingemoji+=f"{every}\n"
     editfile(guild_id).write(typingemoji[:-1])
 
+def makeembed(page, list):
+    pages = math.ceil(len(list)/10)
+    uhhh=""
+    if list == []:
+        return disnake.Embed(description="there is no tags you idiot")
+    elif page == pages:
+        for every in list[10*(page-1):]:
+            uhhh+=f"- {every}\n"
+    else:
+        for every in list[10*(page-1):10*(page-1)+10]:
+            uhhh+=f"- {every}\n"
+    return disnake.Embed(title=f"Page {page}/{pages}", description=uhhh)
+
+def makecomponents(uhh):
+    components = []
+    h = int(uhh[5:uhh.find("/")])
+    g = int(uhh[uhh.find("/") + 1:])
+    if h != 1:
+        components+=[disnake.ui.Button(label="<", style=disnake.ButtonStyle.secondary, custom_id=str(h-1))]
+    if h != g:
+        components+=[disnake.ui.Button(label=">", style=disnake.ButtonStyle.secondary, custom_id=str(h+1))]
+    return components
+
 # i store user ids here
 tema5002=558979299177136164
 flowmeter=1184192159944028200
@@ -79,6 +103,15 @@ async def on_ready():
     while True:
         await bot.change_presence(status=disnake.Status.online,activity=disnake.Game(choice(games)))
         await asyncio.sleep(60)
+
+@bot.listen("on_button_click")
+async def help_listener(ctx):
+    h = ctx.component.custom_id
+    t = []
+    for every in openfile(ctx.guild.id).read().split("\n"):
+        t+=[every.split(";")[0]]
+    embed=makeembed(int(h), t)
+    await ctx.response.edit_message(embed=embed, components=makecomponents(embed.title))
 
 @bot.event
 async def on_message(message):
@@ -115,7 +148,7 @@ async def on_message(message):
                     msg = "reply cant be longer than 500 symbols"
                 elif not any(_==h[1] for _ in ["=", "==", "default", "split", "startswith", "endswith"]):
                     msg = "incorrect detection type <:yeh:1183111141409435819>\n"
-                elif "\n" in h[2]:
+                elif "\n" in rule:
                     msg = "you cant word wrap"
                 else:
                     altteotf(message.guild.id, rule)
@@ -144,15 +177,12 @@ async def on_message(message):
                 print("cant send message wota hell")
 
         elif balls[14:]=="list tags":
-            try:
-                t=""
-                with openfile(message.guild.id) as file:
-                    list=file.read().split("\n")
-                for every in list:
-                    t+=every.split(";")[0]+"\n"
-                await message.channel.send(t)
-            except:
-                await message.channel.send("no tags <:EmotiDead:1185677578707664957>")
+            t=[]
+            for every in openfile(message.guild.id).read().split("\n"):
+                t+=[every.split(";")[0]]
+            embed=makeembed(1, t) 
+            await message.channel.send(embed=embed, components=makecomponents(embed.title))
+
 @bot.slash_command(name="help",description="help")
 async def help(ctx):
     embed=disnake.Embed(title="Flowmeter",color=0x00FFFF,description=
