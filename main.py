@@ -213,7 +213,7 @@ async def help(ctx):
         "> Say *hey flowmeter remove tag keyword* to **remove tag**\n"+
         "> Say *hey flowmeter list tags* to **list existing tags on this server**\n"+
         "> Say *hey flowmeter sort tags* to sort all tags on this server in alphabetic order\n"+
-        "[support server](https://discord.gg/kCStS6pYqr) (kind of)")
+        "[support server](https://discord.gg/kCStS6pYqr) (kind of) | [source code](https://github.com/tema5002/flowmeter)")
     await ctx.send(embed=embed)
 
 @bot.slash_command(name="ping",description="shows ping")
