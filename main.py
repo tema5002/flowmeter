@@ -151,6 +151,8 @@ async def on_message(message):
                     msg = "incorrect detection type <:yeh:1183111141409435819>\n"
                 elif "\n" in rule:
                     msg = "you cant word wrap"
+                elif h[1]=="split" and " " in h[0]:
+                    msg = "you cant use spaces with **split** detection type!"
                 else:
                     altteotf(message.guild.id, rule)
                     msg = f"`{rule}` was added to **{message.guild.name}**'s tags"
