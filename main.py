@@ -143,7 +143,7 @@ async def on_message(message):
                     msg = "silly you already have added that tag"
                 elif len(h)!=3:
                     msg = f"you need to type **3** arguments here but **{len(h)}** was given"
-                elif len(h[0])>100:
+                elif len(h[0])>125:
                     msg = "keyword cant be longer than 100 symbols"
                 elif len(h[2])>500:
                     msg = "reply cant be longer than 500 symbols"
