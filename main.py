@@ -130,7 +130,7 @@ async def on_message(message):
                 elif h[1]=="split" and h[0].lower() in balls.split(): proglet=True
                 elif h[1]=="startswith" and balls.startswith(h[0].lower()): proglet=True
                 elif h[1]=="endswith" and balls.endswith(h[0].lower()): proglet=True
-                if proglet: await message.channel.send(h[2])
+                if proglet: await message.reply(h[2])
 
     if balls.startswith("hey flowmeter "):
         if balls[14:].startswith("add tag ") and not message.author.bot:
@@ -183,6 +183,16 @@ async def on_message(message):
                 t+=[every.split(";")[0]]
             embed=makeembed(1, t) 
             await message.channel.send(embed=embed, components=makecomponents(embed.title))
+
+        elif balls[14:]=="sort tags":
+            if not(message.guild.owner_id==message.author.id or message.author.id==tema5002):
+                await message.channel.send("perms issue "+"<:pointlaugh:1128309108001484882>"*5)
+            else:
+                input_list=sorted(openfile(message.guild.id).readlines())
+                with editfile(message.guild.id) as output:
+                    for every in input_list:
+                        output.write(every)
+                await message.channel.send("oke it sorted i think")
 
 @bot.slash_command(name="help",description="help")
 async def help(ctx):
