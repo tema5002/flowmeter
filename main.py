@@ -51,7 +51,7 @@ def rlfrf(guild_id, line):
 def makeembed(page, list):
     pages = math.ceil(len(list)/10)
     uhhh=""
-    if list == []:
+    if list == ['']:
         return disnake.Embed(description="there is no tags you idiot")
     elif page == pages:
         for every in list[10*(page-1):]:
@@ -62,14 +62,15 @@ def makeembed(page, list):
     return disnake.Embed(title=f"Page {page}/{pages}", description=uhhh)
 
 def makecomponents(uhh):
-    components = []
-    h = int(uhh[5:uhh.find("/")])
-    g = int(uhh[uhh.find("/") + 1:])
-    if h != 1:
-        components+=[disnake.ui.Button(label="<", style=disnake.ButtonStyle.secondary, custom_id=str(h-1))]
-    if h != g:
-        components+=[disnake.ui.Button(label=">", style=disnake.ButtonStyle.secondary, custom_id=str(h+1))]
-    return components
+    if uhh != None:
+        components = []
+        h = int(uhh[5:uhh.find("/")])
+        g = int(uhh[uhh.find("/") + 1:])
+        if h != 1:
+            components+=[disnake.ui.Button(label="<", style=disnake.ButtonStyle.secondary, custom_id=str(h-1))]
+        if h != g:
+            components+=[disnake.ui.Button(label=">", style=disnake.ButtonStyle.secondary, custom_id=str(h+1))]
+        return components
 
 # i store user ids here
 tema5002=558979299177136164
