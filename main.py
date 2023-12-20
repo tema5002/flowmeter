@@ -212,6 +212,7 @@ async def help(ctx):
         "> Say *hey flowmeter add tag keyword;detection_type;reply* to **add new tag**\n"+
         "> Say *hey flowmeter remove tag keyword* to **remove tag**\n"+
         "> Say *hey flowmeter list tags* to **list existing tags on this server**\n"+
+        "> Say *hey flowmeter sort tags* to sort all tags on this server in alphabetic order\n"+
         "[support server](https://discord.gg/kCStS6pYqr) (kind of)")
     await ctx.send(embed=embed)
 
