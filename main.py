@@ -94,6 +94,8 @@ async def on_message(message):
                 elif h[1]=="=" and h[0].lower()==balls: proglet=True
                 elif h[1]=="==" and h[0]==message.content: proglet=True
                 elif h[1]=="split" and h[0].lower() in balls.split(): proglet=True
+                elif h[1]=="startswith" and balls.startswith(h[0].lower()): proglet=True
+                elif h[1]=="endswith" and balls.endswith(h[0].lower()): proglet=True
                 if proglet: await message.channel.send(h[2])
 
     if balls.startswith("hey flowmeter "):
@@ -106,8 +108,12 @@ async def on_message(message):
                 if rule in openfile(message.guild.id).read().split("\n"):
                     msg = "silly you already have added that tag"
                 elif len(h)!=3:
-                    msg = f"you need to type **3** arguments here but **{len(h)}** was given" 
-                elif not any(_==h[1] for _ in ["=", "==", "default", "split"]):
+                    msg = f"you need to type **3** arguments here but **{len(h)}** was given"
+                elif len(h[0])>100:
+                    msg = "keyword cant be longer than 100 symbols"
+                elif len(h[2])>500:
+                    msg = "reply cant be longer than 500 symbols"
+                elif not any(_==h[1] for _ in ["=", "==", "default", "split", "startswith", "endswith"]):
                     msg = "incorrect detection type <:yeh:1183111141409435819>\n"
                 elif "\n" in h[2]:
                     msg = "you cant word wrap"
@@ -158,7 +164,9 @@ async def help(ctx):
         "> - - **default** - triggers if **keyword** in message content (not case sensitive)\n"+
         "> - - **split** - i have no clue how do i explain but it uses python `.split()`\n"+
         "> - - **=** - match\n"+
-        "> - - **==** - exact match (it means case sensitive)\n"+
+        "> - - **==** - exact match (it means case sensitive)\n"
+        "> - - **startswith** - triggers when **reply** starts with **keyword**\n"
+        "> - - **endswith** - triggers when **reply** ends with **keyword**\n"+
         "> - **reply** - uhhhh a reply maybe\n"+
         "> Say *hey flowmeter add tag keyword;detection_type;reply* to **add new tag**\n"+
         "> Say *hey flowmeter remove tag keyword* to **remove tag**\n"+
