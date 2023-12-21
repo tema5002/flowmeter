@@ -35,7 +35,7 @@ def altteotf(guild_id,line):
     file_list=filereadlines(guild_id)
     with editfile(guild_id) as file:
         for every in file_list:
-            if every!="":
+            if every!="" and every!="\n":
                 file.write(every)
         file.write("\n"+line)
 
@@ -44,9 +44,9 @@ def rlfrf(guild_id, line):
     file_list=filereadlines(guild_id)
     typingemoji=""
     for every in file_list:
-        if every!=line:
+        if every!=line and every!="" and every!="\n":
             typingemoji+=f"{every}"
-    editfile(guild_id).write(typingemoji[:-1])
+    editfile(guild_id).write(typingemoji)
 
 def makeembed(page, list):
     pages = math.ceil(len(list)/10)
@@ -133,9 +133,8 @@ async def on_message(message):
     for every in filereadlines(message.guild.id):
         h=every.split(";")
         if len(h)==3 and message.author.id!=flowmeter:
-            proglet=False
-            k=h[0]
-            content=h[2][:-1]
+            k=h[0].replace("\n","")
+            content=h[2].replace("\n","")
             kl=k.lower()
             if  (h[1]=="default"    and kl in balls          ) or \
                 (h[1]=="="          and kl==balls            ) or \
@@ -157,7 +156,7 @@ async def on_message(message):
             else:
                 rule = message.content[22:]
                 h = rule.split(";")
-                if rule in filereadlines(message.guild.id):
+                if any(rule[:rule.find(";")]==rule[:rule.find(";")] for _ in filereadlines(message.guild.id)):
                     msg = "silly you already have added that tag"
                 elif len(h)!=3:
                     msg = f"you need to type **3** arguments here but **{len(h)}** was given"
@@ -192,7 +191,7 @@ async def on_message(message):
                         rule=every
                 if rule in filereadlines(message.guild.id):
                     rlfrf(message.guild.id, rule)
-                    msg = f"`{rule}` was removed from **{message.guild.name}**'s tags"
+                    msg = f"`{rule[:-1]}` was removed from **{message.guild.name}**'s tags"
                 else:
                     msg = f"`{rule}` is not an actual tag you silly"
             try:
