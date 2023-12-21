@@ -23,7 +23,7 @@ def get_file_path(id):
 
     return os.path.join(folder_dir, filename)
 
-def openfile(guild_id):
+def filereadlines(guild_id):
     return codecs.open(get_file_path(guild_id), encoding="utf-8")
 
 # it is like openfile() but for editing
@@ -32,8 +32,8 @@ def editfile(guild_id):
 
 # add line to the end of the file:
 def altteotf(guild_id,line):
-    file_list=openfile(guild_id).read().split("\n")
-    with codecs.open(get_file_path(guild_id), "w", encoding="utf-8") as file:
+    file_list=filereadlines(guild_id)
+    with openfile(guild_id) as file:
         for every in file_list:
             if every!="":
                 file.write(f"{every}\n")
@@ -41,7 +41,7 @@ def altteotf(guild_id,line):
 
 # remove line from the file:
 def rlfrf(guild_id, line):
-    file_list=openfile(guild_id).read().split("\n")
+    file_list=filereadlines(guild_id)
     typingemoji=""
     for every in file_list:
         if every!=line:
@@ -72,8 +72,16 @@ def makecomponents(uhh):
             components+=[disnake.ui.Button(label=">", style=disnake.ButtonStyle.secondary, custom_id=str(h+1))]
         return components
 
-# i store user ids here
-tema5002=558979299177136164
+trustedpeople=[
+    558979299177136164,  # tema5002
+    903650492754845728,  # slinx92
+    1163914091270787125, # dtpls20
+    1186681736936050691, # ammeter.
+    1122540181984120924, # voltmeter2
+    1172796751216906351  # aperturesanity
+    ]
+
+# bot's id here so it ignores itself
 flowmeter=1184192159944028200
 
 games=[
@@ -94,7 +102,8 @@ games=[
     "Minecraft Launcher",
     "Source Filmmaker",
     "Blender",
-    "Code::Blocks 20.03"
+    "Code::Blocks 20.03",
+    "wuggy games"
     ]
 
 @bot.event
@@ -109,7 +118,7 @@ async def on_ready():
 async def help_listener(ctx):
     h = ctx.component.custom_id
     t = []
-    for every in openfile(ctx.guild.id).read().split("\n"):
+    for every in openfile(ctx.guild.id).readlines():
         t+=[every.split(";")[0]]
     embed=makeembed(int(h), t)
     await ctx.response.edit_message(embed=embed, components=makecomponents(embed.title))
@@ -119,27 +128,28 @@ async def on_message(message):
     await bot.process_commands(message)
     balls=message.content.lower()
 
-    with openfile(message.guild.id) as file:
-        for every in file.read().split("\n"):
-            h=every.split(";")
-            if len(h)==3 and message.author.id!=flowmeter:
-                proglet=False
-                if h[1]=="default" and h[0].lower() in balls: proglet=True
-                elif h[1]=="=" and h[0].lower()==balls: proglet=True
-                elif h[1]=="==" and h[0]==message.content: proglet=True
-                elif h[1]=="split" and h[0].lower() in balls.split(): proglet=True
-                elif h[1]=="startswith" and balls.startswith(h[0].lower()): proglet=True
-                elif h[1]=="endswith" and balls.endswith(h[0].lower()): proglet=True
-                if proglet: await message.reply(h[2])
+    for every in filereadlines(message.guild.id):
+        h=every.split(";")
+        if len(h)==3 and message.author.id!=flowmeter:
+            proglet=False
+            k=h[0]
+            kl=k.lower()
+            if (h[1]=="default"    and kl in balls          ) or \
+               (h[1]=="="          and kl==balls            ) or \
+               (h[1]=="=="         and k==message.content   ) or \
+               (h[1]=="split"      and kl in balls.split()  ) or \
+               (h[1]=="startswith" and balls.startswith(kl) ) or \
+               (h[1]=="endswith"   and balls.endswith(kl)   ):
+                   await message.reply(h[2])
 
     if balls.startswith("hey flowmeter "):
         if balls[14:].startswith("add tag ") and not message.author.bot:
-            if not(message.guild.owner_id==message.author.id or message.author.id==tema5002):
+            if not(message.guild.owner_id==message.author.id or message.author.id in trustedpeople):
                 msg = "perms issue "+"<:pointlaugh:1128309108001484882>"*5
             else:
                 rule = message.content[22:]
                 h = rule.split(";")
-                if rule in openfile(message.guild.id).read().split("\n"):
+                if rule in filereadlines(message.guild.id):
                     msg = "silly you already have added that tag"
                 elif len(h)!=3:
                     msg = f"you need to type **3** arguments here but **{len(h)}** was given"
@@ -153,6 +163,8 @@ async def on_message(message):
                     msg = "you cant word wrap"
                 elif h[1]=="split" and " " in h[0]:
                     msg = "you cant use spaces with **split** detection type!"
+                elif h[0].strip()=="" or h[2].strip()=="":
+                    msg = "<:pangooin:1153354856032116808>"
                 else:
                     altteotf(message.guild.id, rule)
                     msg = f"`{rule}` was added to **{message.guild.name}**'s tags"
@@ -162,14 +174,14 @@ async def on_message(message):
                 print("cant send message wota hell")
 
         elif balls[14:].startswith("remove tag ") and not message.author.bot:
-            if not(message.guild.owner_id==message.author.id or message.author.id==tema5002):
+            if not(message.guild.owner_id==message.author.id or message.author.id in trustedpeople):
                 msg = "perms issue "+"<:pointlaugh:1128309108001484882>"*5
             else:
                 rule=message.content[25:]
-                for every in openfile(message.guild.id).read().split("\n"):
+                for every in filereadlines(message.guild.id):
                     if every.split(";")[0]==rule:
                         rule=every
-                if rule in openfile(message.guild.id).read().split("\n"):
+                if rule in filereadlines(message.guild.id):
                     rlfrf(message.guild.id, rule)
                     msg = f"`{rule}` was removed from **{message.guild.name}**'s tags"
                 else:
@@ -181,16 +193,16 @@ async def on_message(message):
 
         elif balls[14:]=="list tags":
             t=[]
-            for every in openfile(message.guild.id).read().split("\n"):
+            for every in filereadlines(message.guild.id):
                 t+=[every.split(";")[0]]
             embed=makeembed(1, t) 
             await message.channel.send(embed=embed, components=makecomponents(embed.title))
 
         elif balls[14:]=="sort tags":
-            if not(message.guild.owner_id==message.author.id or message.author.id==tema5002):
+            if not(message.guild.owner_id==message.author.id or message.author.id in trustedpeople):
                 await message.channel.send("perms issue "+"<:pointlaugh:1128309108001484882>"*5)
             else:
-                input_list=sorted(openfile(message.guild.id).readlines())
+                input_list=sorted(filereadlines(message.guild.id))
                 with editfile(message.guild.id) as output:
                     for every in input_list:
                         output.write(every)
