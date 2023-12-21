@@ -33,7 +33,7 @@ def editfile(guild_id):
 # add line to the end of the file:
 def altteotf(guild_id,line):
     file_list=filereadlines(guild_id)
-    with openfile(guild_id) as file:
+    with editfile(guild_id) as file:
         for every in file_list:
             if every!="":
                 file.write(f"{every}\n")
@@ -134,13 +134,18 @@ async def on_message(message):
             proglet=False
             k=h[0]
             kl=k.lower()
-            if (h[1]=="default"    and kl in balls          ) or \
-               (h[1]=="="          and kl==balls            ) or \
-               (h[1]=="=="         and k==message.content   ) or \
-               (h[1]=="split"      and kl in balls.split()  ) or \
-               (h[1]=="startswith" and balls.startswith(kl) ) or \
-               (h[1]=="endswith"   and balls.endswith(kl)   ):
-                   await message.reply(h[2])
+            if  (h[1]=="default"    and kl in balls          ) or \
+                (h[1]=="="          and kl==balls            ) or \
+                (h[1]=="=="         and k==message.content   ) or \
+                (h[1]=="split"      and kl in balls.split()  ) or \
+                (h[1]=="startswith" and balls.startswith(kl) ) or \
+                (h[1]=="endswith"   and balls.endswith(kl)   ):
+                    if h[2].endswith("DELETE"):
+                        await message.reply(h[2][:-6])
+                        try: await message.delete()
+                        except: await message.channel.send("nevermind cant delete messages :skull:")
+                    else:
+                        await message.reply(h[2])
 
     if balls.startswith("hey flowmeter "):
         if balls[14:].startswith("add tag ") and not message.author.bot:
@@ -163,7 +168,7 @@ async def on_message(message):
                     msg = "you cant word wrap"
                 elif h[1]=="split" and " " in h[0]:
                     msg = "you cant use spaces with **split** detection type!"
-                elif h[0].strip()=="" or h[2].strip()=="":
+                elif h[0].strip()=="" or h[2].strip().replace("DELETE","")=="":
                     msg = "<:pangooin:1153354856032116808>"
                 else:
                     altteotf(message.guild.id, rule)
@@ -215,6 +220,7 @@ async def help(ctx):
         "how to use it:\n"+
         "> Commands Arguments\n"+
         "> - **keyword** - keyword which triggers the reply\n"+
+        "> - - If **keyword** ends with `DELETE` message will be deleted\n"+
         "> - **detection_type**:\n"+
         "> - - **default** - triggers if **keyword** in message content (not case sensitive)\n"+
         "> - - **split** - i have no clue how do i explain but it uses python `.split()`\n"+
