@@ -118,7 +118,7 @@ async def on_ready():
 async def help_listener(ctx):
     h = ctx.component.custom_id
     t = []
-    for every in openfile(ctx.guild.id).readlines():
+    for every in filereadlines(ctx.guild.id):
         t+=[every.split(";")[0]]
     embed=makeembed(int(h), t)
     await ctx.response.edit_message(embed=embed, components=makecomponents(embed.title))
