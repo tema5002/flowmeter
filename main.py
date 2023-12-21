@@ -24,7 +24,7 @@ def get_file_path(id):
     return os.path.join(folder_dir, filename)
 
 def filereadlines(guild_id):
-    return codecs.open(get_file_path(guild_id), encoding="utf-8")
+    return codecs.open(get_file_path(guild_id), encoding="utf-8").readlines()
 
 # it is like openfile() but for editing
 def editfile(guild_id):
@@ -36,8 +36,8 @@ def altteotf(guild_id,line):
     with editfile(guild_id) as file:
         for every in file_list:
             if every!="":
-                file.write(f"{every}\n")
-        file.write(line)
+                file.write(every)
+        file.write("\n"+line)
 
 # remove line from the file:
 def rlfrf(guild_id, line):
@@ -45,7 +45,7 @@ def rlfrf(guild_id, line):
     typingemoji=""
     for every in file_list:
         if every!=line:
-            typingemoji+=f"{every}\n"
+            typingemoji+=f"{every}"
     editfile(guild_id).write(typingemoji[:-1])
 
 def makeembed(page, list):
@@ -76,6 +76,8 @@ trustedpeople=[
     558979299177136164,  # tema5002
     903650492754845728,  # slinx92
     1163914091270787125, # dtpls20
+    801078409076670494,  # hexahedron1
+    1143072932596305932, # kesslon1632
     1186681736936050691, # ammeter.
     1122540181984120924, # voltmeter2
     1172796751216906351  # aperturesanity
@@ -133,6 +135,7 @@ async def on_message(message):
         if len(h)==3 and message.author.id!=flowmeter:
             proglet=False
             k=h[0]
+            content=h[2][:-1]
             kl=k.lower()
             if  (h[1]=="default"    and kl in balls          ) or \
                 (h[1]=="="          and kl==balls            ) or \
@@ -140,12 +143,12 @@ async def on_message(message):
                 (h[1]=="split"      and kl in balls.split()  ) or \
                 (h[1]=="startswith" and balls.startswith(kl) ) or \
                 (h[1]=="endswith"   and balls.endswith(kl)   ):
-                    if h[2].endswith("DELETE"):
-                        await message.reply(h[2][:-6])
+                    if content.endswith("DELETE"):
+                        await message.reply(content[:-6])
                         try: await message.delete()
                         except: await message.channel.send("nevermind cant delete messages :skull:")
                     else:
-                        await message.reply(h[2])
+                        await message.reply(content)
 
     if balls.startswith("hey flowmeter "):
         if balls[14:].startswith("add tag ") and not message.author.bot:
@@ -159,7 +162,7 @@ async def on_message(message):
                 elif len(h)!=3:
                     msg = f"you need to type **3** arguments here but **{len(h)}** was given"
                 elif len(h[0])>125:
-                    msg = "keyword cant be longer than 100 symbols"
+                    msg = "keyword cant be longer than 125 symbols"
                 elif len(h[2])>500:
                     msg = "reply cant be longer than 500 symbols"
                 elif not any(_==h[1] for _ in ["=", "==", "default", "split", "startswith", "endswith"]):
@@ -171,6 +174,7 @@ async def on_message(message):
                 elif h[0].strip()=="" or h[2].strip().replace("DELETE","")=="":
                     msg = "<:pangooin:1153354856032116808>"
                 else:
+                    rule=rule[:rule.find(";")].strip()+rule[rule.find(";"):]
                     altteotf(message.guild.id, rule)
                     msg = f"`{rule}` was added to **{message.guild.name}**'s tags"
             try:
