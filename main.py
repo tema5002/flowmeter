@@ -156,7 +156,7 @@ async def on_message(message):
             else:
                 rule = message.content[22:]
                 h = rule.split(";")
-                if any(rule[:rule.find(";")]==rule[:rule.find(";")] for _ in filereadlines(message.guild.id)):
+                if any(rule[:rule.find(";")]==_[:_.find(";")] for _ in filereadlines(message.guild.id)):
                     msg = "silly you already have added that tag"
                 elif len(h)!=3:
                     msg = f"you need to type **3** arguments here but **{len(h)}** was given"
@@ -203,7 +203,7 @@ async def on_message(message):
             t=[]
             for every in filereadlines(message.guild.id):
                 t+=[every.split(";")[0]]
-            embed=makeembed(1, t) 
+            embed=makeembed(1, t)
             await message.channel.send(embed=embed, components=makecomponents(embed.title))
 
         elif balls[14:]=="sort tags":
