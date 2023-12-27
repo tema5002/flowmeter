@@ -5,6 +5,7 @@ import math
 import asyncio
 import codecs
 import os
+import pickle
 bot=commands.Bot(help_command=None,intents=disnake.Intents.all())
 
 def get_file_path(id):
@@ -23,30 +24,28 @@ def get_file_path(id):
 
     return os.path.join(folder_dir, filename)
 
-def filereadlines(guild_id):
-    return codecs.open(get_file_path(guild_id), encoding="utf-8").readlines()
+def readfile(guild_id):
+    return codecs.open(get_file_path(guild_id), encoding="utf-8").read().split("\n")
 
 # it is like openfile() but for editing
 def editfile(guild_id):
     return codecs.open(get_file_path(guild_id), "w", encoding="utf-8")
 
 # add line to the end of the file:
-def altteotf(guild_id,line):
-    file_list=filereadlines(guild_id)
+def altteotf(guild_id, line):
+    typingemoji=""
+    for every in readfile(guild_id):
+        typingemoji += every+"\n"
     with editfile(guild_id) as file:
-        for every in file_list:
-            if every!="" and every!="\n":
-                file.write(every)
-        file.write("\n"+line)
+        file.write(typingemoji+line)
 
 # remove line from the file:
 def rlfrf(guild_id, line):
-    file_list=filereadlines(guild_id)
     typingemoji=""
-    for every in file_list:
-        if every!=line and every!="" and every!="\n":
-            typingemoji+=f"{every}"
-    editfile(guild_id).write(typingemoji)
+    for every in readfile(guild_id):
+        if every != line:
+            typingemoji+=f"{every}\n"
+    editfile(guild_id).write(typingemoji[:-1])
 
 def makeembed(page, list):
     pages = math.ceil(len(list)/10)
@@ -121,7 +120,7 @@ async def on_ready():
 async def help_listener(ctx):
     h = ctx.component.custom_id
     t = []
-    for every in filereadlines(ctx.guild.id):
+    for every in readfile(ctx.guild.id):
         t+=[every.split(";")[0]]
     embed=makeembed(int(h), t)
     await ctx.response.edit_message(embed=embed, components=makecomponents(embed.title))
@@ -131,11 +130,11 @@ async def on_message(message):
     await bot.process_commands(message)
     balls=message.content.lower()
 
-    for every in filereadlines(message.guild.id):
+    for every in readfile(message.guild.id):
         h=every.split(";")
         if len(h)==3 and message.author.id!=flowmeter:
-            k=h[0].replace("\n","")
-            content=h[2].replace("\n","")
+            k=h[0]
+            content=h[2]
             kl=k.lower()
             if  (h[1]=="default"    and kl in balls          ) or \
                 (h[1]=="="          and kl==balls            ) or \
@@ -143,6 +142,8 @@ async def on_message(message):
                 (h[1]=="split"      and kl in balls.split()  ) or \
                 (h[1]=="startswith" and balls.startswith(kl) ) or \
                 (h[1]=="endswith"   and balls.endswith(kl)   ):
+                    if every=="amigger;==;amigger and his family 😂😂😀":
+                        content=choice(pickle.load(open("amiggerquotes.dat", "rb")))
                     if content.endswith("DELETE"):
                         await message.reply(content[:-6])
                         try: await message.delete()
@@ -157,7 +158,7 @@ async def on_message(message):
             else:
                 rule = message.content[22:]
                 h = rule.split(";")
-                if any(rule[:rule.find(";")]==_[:_.find(";")] for _ in filereadlines(message.guild.id)):
+                if any(rule[:rule.find(";")]==_[:_.find(";")] for _ in readfile(message.guild.id)):
                     msg = "silly you already have added that tag"
                 elif len(h)!=3:
                     msg = f"you need to type **3** arguments here but **{len(h)}** was given"
@@ -187,12 +188,12 @@ async def on_message(message):
                 msg = "perms issue "+"<:pointlaugh:1128309108001484882>"*5
             else:
                 rule=message.content[25:]
-                for every in filereadlines(message.guild.id):
+                for every in readfile(message.guild.id):
                     if every.split(";")[0]==rule:
                         rule=every
-                if rule in filereadlines(message.guild.id):
+                if rule in readfile(message.guild.id):
                     rlfrf(message.guild.id, rule)
-                    msg = f"`{rule[:-1]}` was removed from **{message.guild.name}**'s tags"
+                    msg = f"`{rule}` was removed from **{message.guild.name}**'s tags"
                 else:
                     msg = f"`{rule}` is not an actual tag you silly"
             try:
@@ -202,7 +203,7 @@ async def on_message(message):
 
         elif balls[14:]=="list tags":
             t=[]
-            for every in filereadlines(message.guild.id):
+            for every in readfile(message.guild.id):
                 t+=[every.split(";")[0]]
             embed=makeembed(1, t)
             await message.channel.send(embed=embed, components=makecomponents(embed.title))
@@ -211,10 +212,11 @@ async def on_message(message):
             if not(message.guild.owner_id==message.author.id or message.author.id in trustedpeople):
                 await message.channel.send("perms issue "+"<:pointlaugh:1128309108001484882>"*5)
             else:
-                input_list=sorted(filereadlines(message.guild.id))
+                typingemoji=""
+                for every in sorted(readfile(message.guild.id)):
+                    typingemoji += every+"\n"
                 with editfile(message.guild.id) as output:
-                    for every in input_list:
-                        output.write(every)
+                    output.write(typingemoji[:-1])
                 await message.channel.send("oke it sorted i think")
 
 @bot.slash_command(name="help",description="help")
