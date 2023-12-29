@@ -37,7 +37,7 @@ def smthfile(guild_id, readingmode):
 
 # add line to the end of the file:
 def altteotf(guild_id, line):
-    with smthfile(guild_id) as file:
+    with smthfile(guild_id, "a+") as file:
         file.seek(0)
         if file.read():
             file.seek(0, 2)
