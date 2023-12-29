@@ -31,13 +31,18 @@ def readfile(guild_id):
 def editfile(guild_id):
     return codecs.open(get_file_path(guild_id), "w", encoding="utf-8")
 
+# this is for whatever you want
+def smthfile(guild_id, readingmode):
+    return codecs.open(get_file_path(guild_id), readingmode, encoding="utf-8")
+
 # add line to the end of the file:
 def altteotf(guild_id, line):
-    typingemoji=""
-    for every in readfile(guild_id):
-        typingemoji += every+"\n"
-    with editfile(guild_id) as file:
-        file.write(typingemoji+line)
+    with smthfile(guild_id) as file:
+        file.seek(0)
+        if file.read():
+            file.seek(0, 2)
+            file.write("\n")
+        file.write(line)
 
 # remove line from the file:
 def rlfrf(guild_id, line):
