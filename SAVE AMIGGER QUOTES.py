@@ -26,7 +26,15 @@ amiggerquotes=[
     "amigger and his cell machine\nthe game is controller by ammeter and not you",
     "does amigger having a family",
     "hey amigger add a few minutes ago to your house :house_with_garden::wave::house:",
-    "hey amigger and then I got the super intense for a few weeks and the :evergreen_tree::hedgehog::evergreen_tree::hedgehog:"
+    "hey amigger and then I got the super intense for a few weeks and the :evergreen_tree::hedgehog::evergreen_tree::hedgehog:",
+    "amigger is invading minkos and the kids :rofl::joy::sweat_smile::joy:",
+    "icosamigger and the :evergreen_tree::frog:",
+    "icosamigger with the floor is my password :rage:",
+    "icosamigger and his mouth :stuck_out_tongue_winking_eye:",
+    "icosamigger and then immediately and then immediately after that we are a bushes :grinning:",
+    "icosamigger ate a lot of :cloud_rain: lol :laughing:",
+    "icosamigger ate my lunch :yum:",
+    "icosamigger has a personal gas station :station::fuelpump:"
 ]
 
 pickle.dump(amiggerquotes, open("amiggerquotes.dat", "wb"))
