@@ -1,12 +1,17 @@
-import disnake
+import disnake, math, asyncio, codecs, os, pickle, emoji
 from disnake.ext import commands
 from random import choice
-import math
-import asyncio
-import codecs
-import os
-import pickle
-bot=commands.Bot(help_command=None,intents=disnake.Intents.all())
+
+bot=commands.Bot(command_prefix="fm!", help_command=None, intents=disnake.Intents.all())
+
+def is_emoji(string, ctx_guild_emojis):
+    if string.isdigit():
+        emoji = bot.get_emoji(int(string))
+        if emoji!=None and emoji in ctx_guild_emojis:
+            return True
+    else:
+        return emoji.is_emoji(string)
+    return False
 
 def get_file_path(id):
 
@@ -83,6 +88,7 @@ trustedpeople=[
     801078409076670494,  # hexahedron1
     1143072932596305932, # kesslon1632
     710621353128099901,  # rech2020
+    712639066373619754,  # aflyde
     1186681736936050691, # ammeter.
     1122540181984120924, # voltmeter2
     1172796751216906351  # aperturesanity
@@ -137,9 +143,11 @@ async def on_message(message):
 
     for every in readfile(message.guild.id):
         h=every.split(";")
-        if len(h)==3 and message.author.id!=flowmeter:
+        if 3<=len(h)<=4 and message.author.id!=flowmeter:
+            lenh=len(h)
             k=h[0]
             content=h[2]
+            reply_type=h[3].lower()
             kl=k.lower()
             if  (h[1]=="default"    and kl in balls          ) or \
                 (h[1]=="="          and kl==balls            ) or \
@@ -149,12 +157,17 @@ async def on_message(message):
                 (h[1]=="endswith"   and balls.endswith(kl)   ):
                     if every=="amigger;==;amigger and his family 😂😂😀":
                         content=choice(pickle.load(open("amiggerquotes.dat", "rb")))
-                    if content.endswith("DELETE"):
-                        await message.reply(content[:-6])
-                        try: await message.delete()
-                        except: await message.channel.send("nevermind cant delete messages :skull:")
+                    if lenh==4 and reply_type=="react":
+                        if h[2].isdigit(): await message.add_reaction(bot.get_emoji(int(h[2])))
+                        else: await message.add_reaction(h[2])
                     else:
-                        await message.reply(content)
+                        await message.channel.send(content)
+                    delete = False
+                    if lenh==4 and reply_type=="delete":
+                        try:
+                            await message.delete()
+                        except disnake.MissingPermission:
+                            await message.channel.send("nevermind cant delete messages <:yeh:1183111141409435819>")
 
     if balls.startswith("hey flowmeter "):
         if balls[14:].startswith("add tag ") and not message.author.bot:
@@ -165,8 +178,8 @@ async def on_message(message):
                 h = rule.split(";")
                 if any(rule[:rule.find(";")]==_[:_.find(";")] for _ in readfile(message.guild.id)):
                     msg = "silly you already have added that tag"
-                elif len(h)!=3:
-                    msg = f"you need to type **3** arguments here but **{len(h)}** was given"
+                elif not 3<=len(h)<=4:
+                    msg = f"you need to type **3**/**4** arguments here but **{len(h)}** was given"
                 elif len(h[0])>125:
                     msg = "keyword cant be longer than 125 symbols"
                 elif len(h[2])>500:
@@ -177,8 +190,12 @@ async def on_message(message):
                     msg = "you cant word wrap"
                 elif h[1]=="split" and " " in h[0]:
                     msg = "you cant use spaces with **split** detection type!"
-                elif h[0].strip()=="" or h[2].strip().replace("DELETE","")=="":
+                elif h[0].strip()=="" or h[2].strip()=="":
                     msg = "<:pangooin:1153354856032116808>"
+                elif (len(h)>3 and h[3].lower()=="react" and not is_emoji(h[2], message.guild.emojis)):
+                    msg = "you either entered emoji from another server or its not an emoji <:typing:1133071627370897580>"
+                #elif message.guild.id==938770488702951545:
+                #    msg = "your server was added to blacklist you cant create tags go and cry about it <:pointlaugh:1128309108001484882><:pointlaugh:1128309108001484882><:pointlaugh:1128309108001484882><:pointlaugh:1128309108001484882>"
                 else:
                     rule=rule[:rule.find(";")].strip()+rule[rule.find(";"):]
                     altteotf(message.guild.id, rule)
@@ -228,10 +245,12 @@ async def on_message(message):
 async def help(ctx):
     embed=disnake.Embed(title="Flowmeter",color=0x00FFFF,description=
         "bot made by tema5002\n\n"+
-        "how to use it:\n"+
+        "> Say *hey flowmeter add tag keyword;detection_type;reply;reply_type* to **add new tag**\n"+
+        "> Say *hey flowmeter remove tag keyword* to **remove tag**\n"+
+        "> Say *hey flowmeter list tags* to **list existing tags on this server**\n"+
+        "> Say *hey flowmeter sort tags* to sort all tags on this server in alphabetic order\n"+
         "> Commands Arguments\n"+
         "> - **keyword** - keyword which triggers the reply\n"+
-        "> - - If **keyword** ends with `DELETE` message will be deleted\n"+
         "> - **detection_type**:\n"+
         "> - - **default** - triggers if **keyword** in message content (not case sensitive)\n"+
         "> - - **split** - i have no clue how do i explain but it uses python `.split()`\n"+
@@ -240,10 +259,10 @@ async def help(ctx):
         "> - - **startswith** - triggers when **reply** starts with **keyword**\n"
         "> - - **endswith** - triggers when **reply** ends with **keyword**\n"+
         "> - **reply** - uhhhh a reply maybe\n"+
-        "> Say *hey flowmeter add tag keyword;detection_type;reply* to **add new tag**\n"+
-        "> Say *hey flowmeter remove tag keyword* to **remove tag**\n"+
-        "> Say *hey flowmeter list tags* to **list existing tags on this server**\n"+
-        "> Say *hey flowmeter sort tags* to sort all tags on this server in alphabetic order\n"+
+        "> - - If you use \"react\" in reply must be an emoji id or emoji itself if its unicode\n"+
+        "> - **reply_type**\n"+
+        "> - - react - read lines above"
+        "> - - delete - deletes the message"
         "[support server](https://discord.gg/kCStS6pYqr) (kind of) | [source code](https://github.com/tema5002/flowmeter)")
     await ctx.send(embed=embed)
 
