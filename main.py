@@ -1,13 +1,15 @@
+prefix="hey flowmeter " # enter whatever you want here
+
 import disnake, math, asyncio, codecs, os, pickle, emoji
 from disnake.ext import commands
 from random import choice
 
 bot=commands.Bot(command_prefix="fm!", help_command=None, intents=disnake.Intents.all())
 
-def is_emoji(string, ctx_guild_emojis):
+def isemoji(string, ctx_guild_emojis):
     if string.isdigit():
-        emoji = bot.get_emoji(int(string))
-        if emoji!=None and emoji in ctx_guild_emojis:
+        char = bot.get_emoji(int(string))
+        if char!=None and char in ctx_guild_emojis:
             return True
     else:
         return emoji.is_emoji(string)
@@ -94,9 +96,6 @@ trustedpeople=[
     1172796751216906351  # aperturesanity
     ]
 
-# bot's id here so it ignores itself
-flowmeter=1184192159944028200
-
 games=[
     "Minecraft",
     "Half-Life 2",
@@ -143,7 +142,7 @@ async def on_message(message):
 
     for every in readfile(message.guild.id):
         h=every.split(";")
-        if 3<=len(h)<=4 and message.author.id!=flowmeter:
+        if 3<=len(h)<=4 and message.author!=bot.user:
             lenh=len(h)
             k=h[0]
             content=h[2]
@@ -169,12 +168,12 @@ async def on_message(message):
                         except disnake.MissingPermission:
                             await message.channel.send("nevermind cant delete messages <:yeh:1183111141409435819>")
 
-    if balls.startswith("hey flowmeter "):
-        if balls[14:].startswith("add tag ") and not message.author.bot:
+    if balls.startswith(prefix):
+        if balls[len(prefix):].startswith("add tag ") and not message.author.bot:
             if not(message.guild.owner_id==message.author.id or message.author.id in trustedpeople):
                 msg = "perms issue "+"<:pointlaugh:1128309108001484882>"*5
             else:
-                rule = message.content[22:]
+                rule = message.content[len(prefix)+8:]
                 h = rule.split(";")
                 if any(rule[:rule.find(";")]==_[:_.find(";")] for _ in readfile(message.guild.id)):
                     msg = "silly you already have added that tag"
@@ -192,7 +191,7 @@ async def on_message(message):
                     msg = "you cant use spaces with **split** detection type!"
                 elif h[0].strip()=="" or h[2].strip()=="":
                     msg = "<:pangooin:1153354856032116808>"
-                elif (len(h)>3 and h[3].lower()=="react" and not is_emoji(h[2], message.guild.emojis)):
+                elif (len(h)>3 and h[3].lower()=="react" and not isemoji(h[2], message.guild.emojis)):
                     msg = "you either entered emoji from another server or its not an emoji <:typing:1133071627370897580>"
                 #elif message.guild.id==938770488702951545:
                 #    msg = "your server was added to blacklist you cant create tags go and cry about it <:pointlaugh:1128309108001484882><:pointlaugh:1128309108001484882><:pointlaugh:1128309108001484882><:pointlaugh:1128309108001484882>"
@@ -205,11 +204,11 @@ async def on_message(message):
             except:
                 print("cant send message wota hell")
 
-        elif balls[14:].startswith("remove tag ") and not message.author.bot:
+        elif balls[len(prefix):].startswith("remove tag ") and not message.author.bot:
             if not(message.guild.owner_id==message.author.id or message.author.id in trustedpeople):
                 msg = "perms issue "+"<:pointlaugh:1128309108001484882>"*5
             else:
-                rule=message.content[25:]
+                rule=message.content[len(prefix)+11:]
                 for every in readfile(message.guild.id):
                     if every.split(";")[0]==rule:
                         rule=every
@@ -223,14 +222,14 @@ async def on_message(message):
             except:
                 print("cant send message wota hell")
 
-        elif balls[14:]=="list tags":
+        elif balls[len(prefix):]=="list tags":
             t=[]
             for every in readfile(message.guild.id):
                 t+=[every.split(";")[0]]
             embed=makeembed(1, t)
             await message.channel.send(embed=embed, components=makecomponents(embed.title))
 
-        elif balls[14:]=="sort tags":
+        elif balls[len(prefix):]=="sort tags":
             if not(message.guild.owner_id==message.author.id or message.author.id in trustedpeople):
                 await message.channel.send("perms issue "+"<:pointlaugh:1128309108001484882>"*5)
             else:
@@ -245,10 +244,10 @@ async def on_message(message):
 async def help(ctx):
     embed=disnake.Embed(title="Flowmeter",color=0x00FFFF,description=
         "bot made by tema5002\n\n"+
-        "> Say *hey flowmeter add tag keyword;detection_type;reply;reply_type* to **add new tag**\n"+
-        "> Say *hey flowmeter remove tag keyword* to **remove tag**\n"+
-        "> Say *hey flowmeter list tags* to **list existing tags on this server**\n"+
-        "> Say *hey flowmeter sort tags* to sort all tags on this server in alphabetic order\n"+
+       f"> Say *{prefix}add tag keyword;detection_type;reply;reply_type* to **add new tag**\n"+
+       f"> Say *{prefix}remove tag keyword* to **remove tag**\n"+
+       f"> Say *{prefix}list tags* to **list existing tags on this server**\n"+
+       f"> Say *{prefix}sort tags* to sort all tags on this server in alphabetic order\n"+
         "> Commands Arguments\n"+
         "> - **keyword** - keyword which triggers the reply\n"+
         "> - **detection_type**:\n"+
