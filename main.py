@@ -147,7 +147,7 @@ async def on_message(message):
             lenh=len(h)
             k=h[0]
             content=h[2]
-            reply_type=h[3].lower()
+            if lenh==4: reply_type=h[3].lower()
             kl=k.lower()
             if  (h[1]=="default"    and kl in balls          ) or \
                 (h[1]=="="          and kl==balls            ) or \
