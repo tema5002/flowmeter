@@ -34,7 +34,21 @@ amiggerquotes=[
     "icosamigger and then immediately and then immediately after that we are a bushes :grinning:",
     "icosamigger ate a lot of :cloud_rain: lol :laughing:",
     "icosamigger ate my lunch :yum:",
-    "icosamigger has a personal gas station :station::fuelpump:"
+    "icosamigger has a personal gas station :station::fuelpump:",
+    "amigger and his team :trophy: are doing well :grinning::slight_smile:",
+    "amigger and i think with portals :open_file_folder::page_facing_up::stuck_out_tongue:",
+    "amigger and more :heavy_plus_sign: than a week :date: or two :clock230::blush:",
+    "amigger is a wuggy games :video_game::sob::wink::blush::slight_smile::joy:",
+    "amigger is not a greatest cow :cow2:",
+    "amigger and the email :envelope::blush:",
+    "amigger and then I can get a girl pregnant :exploding_head:",
+    "amigger and his work is a wuggy games :dart:",
+    "amigger ate my cat :cat2::anguished:",
+    "amigger is melting face :melting_face::smiling_imp:",
+    "amigger is the best :shaking_face::blush:",
+    "amigger and the greatest :sunglasses: cow :pig2::blush:",
+    "amigger and his animals :dog2: are treated :syringe: with pie :pie::dog:",
+    "amiggeration is the best crew and his team mates :trophy: who are doing well :grinning::thumbsup:"
 ]
 
 pickle.dump(amiggerquotes, open("amiggerquotes.dat", "wb"))
