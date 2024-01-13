@@ -155,7 +155,9 @@ async def on_message(message):
                 (h[1]=="startswith" and balls.startswith(kl) ) or \
                 (h[1]=="endswith"   and balls.endswith(kl)   ):
                     if h[0]=="amigger" and h[2]=="amigger and his family 😂😂😀":
-                        content=choice(pickle.load(open("amiggerquotes.dat", "rb")))
+                        content = choice(pickle.load(open("amiggerquotes.dat", "rb")))
+                    if h[0]=="mrkrabs":
+                        content = choice(pickle.load(open("mrkrabsquotes.dat", "rb")))
                     if lenh==4 and reply_type=="react":
                         if h[2].isdigit(): await message.add_reaction(bot.get_emoji(int(h[2])))
                         else: await message.add_reaction(h[2])
