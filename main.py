@@ -59,6 +59,16 @@ def rlfrf(guild_id, line):
             typingemoji+=f"{every}\n"
     editfile(guild_id).write(typingemoji[:-1])
 
+def update_line(guild_id, oldLine, newLine):
+    typingemoji=""
+    for every in readfile(guild_id):
+        if every != oldLine:
+            typingemoji+=every
+        else:
+            typingemoji+=newLine
+        typingemoji+="\n"
+    editfile(guild_id).write(typingemoji[:-1])
+
 def makeembed(page, list):
     pages = math.ceil(len(list)/10)
     uhhh=""
@@ -201,6 +211,44 @@ async def on_message(message):
                     rule=rule[:rule.find(";")].strip()+rule[rule.find(";"):]
                     altteotf(message.guild.id, rule)
                     msg = f"`{rule}` was added to **{message.guild.name}**'s tags"
+            try:
+                await message.channel.send(msg)
+            except:
+                print("cant send message wota hell")
+
+        elif balls[len(prefix):].startswith("update tag ") and not message.author.bot:
+            if not(message.guild.owner_id==message.author.id or message.author.id in trustedpeople):
+                msg = "perms issue "+"<:pointlaugh:1128309108001484882>"*5
+            else:
+                rule = message.content[len(prefix)+11:]
+                h = rule.split(";")
+                if not any(rule[:rule.find(";")]==_[:_.find(";")] for _ in readfile(message.guild.id)):
+                    msg = "you havent added that tag yet"
+                elif not 3<=len(h)<=4:
+                    msg = f"you need to type **3**/**4** arguments here but **{len(h)}** was given"
+                elif len(h[0])>125:
+                    msg = "keyword cant be longer than 125 symbols"
+                elif len(h[2])>500:
+                    msg = "reply cant be longer than 500 symbols"
+                elif not any(_==h[1] for _ in ["=", "==", "default", "split", "startswith", "endswith"]):
+                    msg = "incorrect detection type <:yeh:1183111141409435819>\n"
+                elif "\n" in rule:
+                    msg = "you cant word wrap"
+                elif h[1]=="split" and " " in h[0]:
+                    msg = "you cant use spaces with **split** detection type!"
+                elif h[0].strip()=="" or h[2].strip()=="":
+                    msg = "<:pangooin:1153354856032116808>"
+                elif (len(h)>3 and h[3].lower()=="react" and not isemoji(h[2], message.guild.emojis)):
+                    msg = "you either entered emoji from another server or its not an emoji <:typing:1133071627370897580>"
+                #elif message.guild.id==938770488702951545:
+                #    msg = "your server was added to blacklist you cant create tags go and cry about it <:pointlaugh:1128309108001484882><:pointlaugh:1128309108001484882><:pointlaugh:1128309108001484882><:pointlaugh:1128309108001484882>"
+                else:
+                    for every in readfile(message.guild.id):
+                        if every.split(";")[0]==h[0]:
+                            oldRule=every
+                    rule=rule[:rule.find(";")].strip()+rule[rule.find(";"):]
+                    update_line(message.guild.id, oldRule, rule)
+                    msg = f"updated `{oldRule}` to `{rule}` on **{message.guild.name}**"
             try:
                 await message.channel.send(msg)
             except:
