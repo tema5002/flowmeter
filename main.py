@@ -172,7 +172,7 @@ async def on_message(message):
                             if emoji:
                                 await message.add_reaction()
                             else:
-                                await message.channel.send(f"couldn't find emoji with id `{int[h2]}`", delete_after=10)
+                                await message.channel.send(f"couldn't find emoji with id `{h[2]}`", delete_after=10)
                         else: await message.add_reaction(h[2])
                     else:
                         await message.channel.send(content)
