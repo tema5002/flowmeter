@@ -170,7 +170,7 @@ async def on_message(message):
                         if h[2].isdigit():
                             emoji = bot.get_emoji(int(h[2]))
                             if emoji:
-                                await message.add_reaction()
+                                await message.add_reaction(emoji)
                             else:
                                 await message.channel.send(f"couldn't find emoji with id `{h[2]}`", delete_after=10)
                         else: await message.add_reaction(h[2])
