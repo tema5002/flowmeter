@@ -11,9 +11,7 @@ def isemoji(string, ctx_guild_emojis):
         char = bot.get_emoji(int(string))
         if char!=None and char in ctx_guild_emojis:
             return True
-    else:
-        return emoji.is_emoji(string)
-    return False
+    return emoji.is_emoji(string)
 
 def get_file_path(id):
 
@@ -169,7 +167,12 @@ async def on_message(message):
                     if h[0]=="mrkrabs":
                         content = choice(pickle.load(open("mrkrabsquotes.dat", "rb")))
                     if lenh==4 and reply_type=="react":
-                        if h[2].isdigit(): await message.add_reaction(bot.get_emoji(int(h[2])))
+                        if h[2].isdigit():
+                            emoji = bot.get_emoji(int(h[2]))
+                            if emoji:
+                                await message.add_reaction()
+                            else:
+                                await message.channel.send(f"couldn't find emoji with id `{int[h2]}`", delete_after=10)
                         else: await message.add_reaction(h[2])
                     else:
                         await message.channel.send(content)
